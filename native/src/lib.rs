@@ -1,10 +1,20 @@
 #[macro_use]
 extern crate neon;
+extern crate crypto;
 
 use neon::prelude::*;
+use self::crypto::digest::Digest;
+use self::crypto::sha1::Sha1;
 
 fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
     Ok(cx.string("hello node"))
+}
+
+fn gen_sha1_key(mut cx: FunctionContext) -> JsResult<JsString> {
+    let input = cx.argument::<JsString>(0)?;
+    let mut hasher = Sha1::new();
+    hasher.input_str(&input.value());
+    Ok(cx.string(hasher.result_str()))
 }
 
 pub struct User {
@@ -35,6 +45,7 @@ declare_types! {
 register_module!(mut m, {
     // Export a function
     m.export_function("hello", hello)?;
+    m.export_function("gen_sha1_key", gen_sha1_key)?;
     // Export a class
     m.export_class::<JsUser>("User")?;
     // Export strings, numbers, booleans, etc

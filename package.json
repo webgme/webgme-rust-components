@@ -1,6 +1,7 @@
 {
   "name": "webgme-rust",
   "version": "0.1.0",
+  "description": "WebGME related Rust components",
   "main": "lib/index.js",
   "dependencies": {
     "neon-cli": "^0.2.0"

@@ -1,8 +1,4 @@
-Cargo.lock
-*/.idea
 .idea
+Cargo.lock
+!dist/*
 target
-
-#we need the dist to buildless usage
-!dist/node/*.js
-!dist/web/*.wasm

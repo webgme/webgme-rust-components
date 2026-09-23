@@ -34,4 +34,12 @@ mod tests {
             "aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d"
         );
     }
+
+    #[test]
+    fn multibyte_utf8() {
+        assert_eq!(
+            sha1_hex("café"),
+            "f424452a9673918c6f09b0cdd35b20be8e6ae7d7"
+        );
+    }
 }

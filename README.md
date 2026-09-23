@@ -26,6 +26,14 @@ cargo install wasm-pack
 
 or `npm run build`.
 
+## Test
+
+```bash
+npm test
+```
+
+This runs the Rust digest tests, checks the committed `dist` packages, then builds the current sources into a temporary directory and checks that build too. Both the Node `hash` export and the browser `wasm_bindgen.hash` call must keep returning the same SHA-1 hex strings. Node.js 18 or newer is required.
+
 ## Usage
 
 Depend on the files under `dist` rather than building Rust in the consuming project.

@@ -1,4 +1,2 @@
 .idea
-Cargo.lock
-!dist/*
-target
+/target

@@ -1,42 +1,43 @@
 # webgme-rust
 
-Rust components to use/embed with webgme.
+Rust components compiled to WebAssembly for use with WebGME.
 
-As these components used through webassembly and compilation and those toolchains are still heavily developing,
-the rule of thumb is to always check for the versions and make sure the end result is compatible and supported
-in the major browsers.
+The published artifacts live in `dist/`: `dist/web` for browsers and `dist/node` for Node.js.
+Rebuild them when the Rust sources change. Browser support follows whatever `wasm-bindgen` emits;
+check the generated glue after a toolchain bump.
 
-## environment
+## Environment
 
-At the time of creation, these were the steps that was taken to setup a development environment (they might change
-with time and some restrictions will hopefully ease):
-- the environment requires linux (or windows subsystem for linux 
-[WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10))
-- [rustup](https://www.rust-lang.org/learn/get-started) is the required rust toolchain 
-```curl https://sh.rustup.rs -sSf | sh```
-- when you have rust you need the [latest](https://www.hellorust.com/setup/wasm-target/) and add 
-webassembly compile target
+- Rustup, on the stable channel. `rust-toolchain.toml` selects stable and the `wasm32-unknown-unknown` target.
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
 
-```
-rustup toolchain install nightly
-rustup update
-rustup target add wasm32-unknown-unknown --toolchain nightly
-cargo install --git https://github.com/alexcrichton/wasm-gc
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install wasm-pack
 ```
 
-- finally, for easy building you will need 
-[wasm-pac](https://github.com/rustwasm/wasm-pack) and 
-[wasm-pack-cli](https://rustwasm.github.io/wasm-pack/installer/) 
-```curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh```
+`wasm32-unknown-unknown` is a stable target. Nightly and `wasm-gc` are not required; wasm-pack runs the bindgen post-processing itself.
 
-##build
-To build the package content, just run the ```build.sh``` script or give the command
-```npm run build```.
+## Build
 
-##usage
+```bash
+./build.sh
+```
 
-To use the contents of this package, you just have to import it to your project and 
-a refer it properly. You have to pay attention the contents of the ```dist``` directory.
-It will contain the latest build version so during use you do not need to build it.
-It will contain two sub-directories one for client-side usage and one for server-side 
-(nodejs).
+or `npm run build`.
+
+## Usage
+
+Depend on the files under `dist` rather than building Rust in the consuming project.
+
+- Browser (`dist/web`): a classic script. After load, `wasm_bindgen` is on the global object.
+
+```javascript
+wasm_bindgen({ module_or_path: "./wasm-sha1_bg.wasm" }).then(function () {
+  wasm_bindgen.hash("hello");
+});
+```
+
+- Node (`dist/node`): `require` the package and call `hash(data)`. The loader reads the `.wasm` file next to the script; there is no separate `_bg.js`.
+
+`hash` returns the SHA-1 digest of the UTF-8 input as a lowercase hex string.

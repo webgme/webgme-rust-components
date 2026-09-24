@@ -5,6 +5,7 @@
   "dependencies": {
   },
   "scripts": {
-    "build": "./build.sh"
+    "build": "./build.sh",
+    "test": "./test.sh"
   }
 }
